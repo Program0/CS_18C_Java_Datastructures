@@ -1,5 +1,13 @@
 package edu.rcc.datastructures;
 
+/**
+ * 
+ * @author Marlo Zeroth Program to test the LinkedListGenericsV4,
+ *         LinkedListInt_V1, LinkedListInt_V2, LinkedListInteger,V3, and
+ *         LinkedListGenerics_V4 classes. Uses the Stuff class to test the
+ *         classes using generics.
+ *
+ */
 public class TestLinkedLists {
 
 	public static void main(String[] args) {
@@ -72,7 +80,7 @@ public class TestLinkedLists {
 		LinkedListGenerics_V4<Stuff> myList4 = new LinkedListGenerics_V4<Stuff>();
 		// Testing isEmpty(),insert(entry), displayList()
 		System.out.println("Is the list empty: " + myList4.isEmpty());
-		System.out.println("Filling the list.");
+		System.out.println("Filling the list with 10 elements.");
 		boolean thing3;
 		for (Integer i = 1; i <= 10; i++) {
 			if (i % 2 == 0) {
@@ -84,27 +92,39 @@ public class TestLinkedLists {
 			myList4.insert(stuff);
 		}
 		System.out.println("Is the list empty: " + myList4.isEmpty());
-		System.out.println("The list contains:");
+		System.out.println("The list is size:" + myList4.getSize()
+				+ " and contains:");
 		myList4.displayList();
 		// Testing remove(entry)
-		System.out.println("Removing the middle four elements:");
-		for (Integer i = 3; i < 7; i++) {	
-			if (i % 2 == 0) {
-				thing3 = true;
-			} else {
-				thing3 = false;
+		System.out
+				.println("Removing from the third element and beyond what list has:");
+		try {
+			for (Integer i = 3; i < 15; i++) {
+				if (i % 2 == 0) {
+					thing3 = true;
+				} else {
+					thing3 = false;
+				}
+				Stuff stuff = new Stuff(i, "thing2#" + i, thing3);
+				myList4.delete(stuff);
+				System.out.println("The list is size:" + myList4.getSize()
+						+ " and contains:");
+				myList4.displayList();
 			}
-			Stuff stuff = new Stuff(i, "thing2#" + i, thing3);
-			myList4.delete(stuff);
-			System.out.println("The list contains:");
-			myList4.displayList();
+
+			// Testing clear() and isEmpty()
+			System.out.println("Clearing the list");
+			myList4.clear();
+			System.out.println("Is the list empty: " + myList4.isEmpty());
+			System.out.println("Clearing the list when it is empty:");
+			System.out.println("Is the list empty: " + myList4.isEmpty());
+			myList4.clear();
+
+		} catch (MyEmptyStackException e) {
+			System.out.println("Error! The list has " + e.getInputNumber()
+					+ " total elements:");
 		}
 
-		// Testing clear() and isEmpty()
-		System.out.println("Clearing the list");
-		myList4.clear();
-		System.out.println("Is the list empty: " + myList4.isEmpty());
-		
 	}
 
 }

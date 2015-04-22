@@ -5,11 +5,10 @@
 
 package edu.rcc.datastructures;
 
-import java.util.EmptyStackException;
 // Generic class used with this class must extend Comparable and Comparator
 public class StackGenerics_V1<E extends Comparable<E>> {
 	GenericNode<E> topNode;//Node to navigate stack
-	int sizeOfStack;
+	Integer sizeOfStack;
 	
 	//Default constructor
 	public StackGenerics_V1() {
@@ -32,7 +31,7 @@ public class StackGenerics_V1<E extends Comparable<E>> {
 	 * Remove and return the top element in the stack.
 	 * @return Object <E> 
 	 */
-	public E pop() {
+	public E pop() throws MyEmptyStackException{
 		//Only pop nodes is stack is not empty
 		if (topNode != null) {
 			//Get the top nodes value and return it
@@ -42,7 +41,7 @@ public class StackGenerics_V1<E extends Comparable<E>> {
 			sizeOfStack--;
 			return top;
 		} else {
-			throw new EmptyStackException();
+			throw new MyEmptyStackException(sizeOfStack);
 		}
 	}
 
@@ -50,17 +49,26 @@ public class StackGenerics_V1<E extends Comparable<E>> {
 	 * Returns the top element in the stack without removing it.
 	 * @return Object <E> 
 	 */
-	public E peek() {
+	public E peek() throws MyEmptyStackException {
 		if (topNode != null) {
 			E top = topNode.getData();			
 			return top;
 		} else
-			throw new EmptyStackException();
+			throw new MyEmptyStackException(sizeOfStack);
 	}
 	
-	public void clear(){
+	/**
+	 * Empties the whole list
+	 * @throws MyEmptyStackException
+	 */
+	
+	public void clear() throws MyEmptyStackException{
+		if(!isEmpty()){
 		topNode = null;// Get rid of the top and everything else goes away
-		sizeOfStack = 0;
+		sizeOfStack = 0;}
+		else{
+			throw new MyEmptyStackException(sizeOfStack);
+		}
 	}
 	
 	boolean isEmpty(){

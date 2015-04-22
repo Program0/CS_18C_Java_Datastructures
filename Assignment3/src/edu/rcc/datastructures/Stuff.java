@@ -31,6 +31,7 @@ public class Stuff implements Comparator<Stuff>, Comparable<Stuff> {
 		return alphabetValue;
 	}
 
+	@Override
 	public String toString() {
 		String contents;
 		contents = numericValue + " " + stringValue + " " + alphabetValue;
