@@ -8,7 +8,7 @@ public class EfficiencyWithTime {
 	public static int[] fillArray(int n) {
 		int array[] = new int[n];
 		Random rand = new Random();
-		int max = 99;
+		int max = n;
 		int min = 10;
 		for (int i = 0; i < array.length; i++) {
 			array[i] = rand.nextInt(max - min + 1) + min;
@@ -57,15 +57,14 @@ public class EfficiencyWithTime {
 			int middle = (low + high) / 2;
 
 			// Check to see if we found the target
-			if (a[middle] == target) {
-				System.out.println("I found it!");
+			if (a[middle] == target) {				
 				return true;
 			}
 			// If we haven't found it, change the range
-			else if (a[middle] < target) {
-				low = middle + 1;
-			} else {
+			else if (a[middle] > target) {
 				high = middle - 1;
+			} else {
+				low = middle + 1;
 			}
 		}
 		// We never found it.
@@ -116,7 +115,7 @@ public class EfficiencyWithTime {
 
 	public static void main(String[] args) {
 		// Declare variables
-		int size = 160000;
+		int size = 150000;
 		int array[] = fillArray(size);
 		long startTime;// Hold the start of the calculation
 		long endTime;// Hold the end of the calculation
@@ -132,7 +131,7 @@ public class EfficiencyWithTime {
 		endTime = System.currentTimeMillis();
 		// Output the efficiency
 		System.out.println("That took " + (endTime - startTime) / 1000.0f
-				+ " seconds");
+				+ " seconds"+ " endtime: "+endTime +" start:" + startTime);
 
 		// Use a different array and fill it randomly to sort with bubbleSort
 		int array2[] = fillArray(size);
@@ -150,22 +149,25 @@ public class EfficiencyWithTime {
 		endTime = System.currentTimeMillis();
 		// Output the efficiency
 		System.out.println("That took " + (endTime - startTime) / 1000.0f
-				+ " seconds");
+				+ " seconds"+ " endtime: "+endTime +" start:" + startTime);
 		// Test binary search. Need to test using a random number
 		Random randomSearch = new Random();
-		int max = 99;
+		int max = size;
 		int min = 10;
 		int searchNumber = (randomSearch.nextInt(max - min + 1) + min);
+		startTime = 0;
+		endTime = 0;
+		
 		
 		// Begin time for binarySearch()
 		startTime = System.currentTimeMillis();
-		boolean found = binarySearch(searchNumber, array);
+		boolean found = binarySearch(searchNumber, array2);
 		endTime = System.currentTimeMillis();
 		System.out.println("Binary search found the number " + searchNumber
 				+ " in array: " + found);
 		// Output the efficiency
-				System.out.println("That took " + (endTime - startTime) / 1000.0f
-						+ " seconds");
+				System.out.println("That took "+(endTime - startTime) / 1000.0f
+						+ " seconds" + " endtime: "+endTime +" start:" + startTime);
 
 	}
 

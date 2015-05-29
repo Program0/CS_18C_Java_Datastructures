@@ -29,19 +29,19 @@ public class TestCicurlarlyLinkedList {
 		System.out.println("Testing adding to the back:");
 		CircularlyLinkedList<Stuff> myListBack = new CircularlyLinkedList<Stuff>();
 		;
-		myListBack.addFront(stuff1);
+		myListBack.addBack(stuff1);
 		System.out.println("size is now: " + myListBack.getSize());
 		myListBack.displayList();
-		myListBack.addFront(stuff2);
+		myListBack.addBack(stuff2);
 		System.out.println("size is now: " + myListBack.getSize());
 		myListBack.displayList();
-		myListBack.addFront(stuff3);
+		myListBack.addBack(stuff3);
 		System.out.println("size is now: " + myListBack.getSize());
 		myListBack.displayList();
-		myListBack.addFront(stuff4);
+		myListBack.addBack(stuff4);
 		System.out.println("size is now: " + myListBack.getSize());
 		myListBack.displayList();
-		myListBack.addFront(stuff5);
+		myListBack.addBack(stuff5);
 		System.out.println("size is now: " + myListBack.getSize());
 		myListBack.displayList();
 

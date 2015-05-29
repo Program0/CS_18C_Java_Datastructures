@@ -79,6 +79,18 @@ public class CircularlyLinkedList<E> {
 			numberOfEntries++;
 		}
 	}
+	
+	public E popFront(){
+		SingleNode<E> node = new SingleNode<E>();
+		
+		return node.data;
+	}
+	
+	public E popBack(){
+		SingleNode<E> node = new SingleNode<E>();
+		return node.data;
+		
+	}
 
 	/* helper functions */
 	
@@ -88,9 +100,9 @@ public class CircularlyLinkedList<E> {
 		do {
 			// go to the next node
 			System.out.println(cursor.data);
-			System.out.println("current cursor address is:" + cursor);
-			System.out.println("next point to:" + cursor.next);
-			System.out.println("previous points to:" + cursor.previous);
+			//System.out.println("current cursor address is:" + cursor);
+			//System.out.println("next point to:" + cursor.next);
+			//System.out.println("previous points to:" + cursor.previous);
 			cursor = cursor.next;
 			index++;
 		} while (index<numberOfEntries);
@@ -126,7 +138,10 @@ public class CircularlyLinkedList<E> {
 	/* static nested class */
 	private static class SingleNode<E> {
 
-		/* constructor */
+		/* constructors */
+		public SingleNode(){
+			data = null;
+		}
 		public SingleNode(E data) {
 			this.data = data;
 		}

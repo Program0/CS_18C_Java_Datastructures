@@ -10,6 +10,7 @@ public class TestDoublyLinkedList {
 		Stuff mystuff2 = new Stuff(1, "oranges", true);
 		Stuff mystuff3 = new Stuff(2, "melons", true);
 		Stuff mystuff4 = new Stuff(-1, "carrot", false);
+		System.out.println("Added one item.");
 		list1.pushToFront(mystuff);
 
 		System.out.println("Is list empty? " + list1.isEmpty());
@@ -70,8 +71,8 @@ public class TestDoublyLinkedList {
 		}
 		// Test the clear function
 		try {
-			System.out.println("After pushing ten itmes at the front list has "
-					+ list1.size() + " now contains: ");
+			System.out.println("After pushing ten times at the front list has "
+					+ list1.size() + " items and now contains: ");
 			list1.displayList();
 			list1.clear();
 			System.out.println("Clearing the list. Stack has " + list1.size()
