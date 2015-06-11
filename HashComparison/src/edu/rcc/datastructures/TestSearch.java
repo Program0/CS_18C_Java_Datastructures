@@ -1,5 +1,7 @@
 package edu.rcc.datastructures;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 public class TestSearch {
@@ -11,7 +13,6 @@ public class TestSearch {
 	 * @return
 	 */
 	public static boolean linearSearch(String[] anArray, String searchItem) {
-		System.out.println("Doing linear search");
 		boolean found = false;
 		int index = 0;
 		// Loop through the array or until we find the searchItem
@@ -33,7 +34,6 @@ public class TestSearch {
 	 */
 	// Assumes array has already been sorted
 	public static boolean binarySearch(String[] anArray, String searchItem) {
-		System.out.println("\nDoing binary search");
 		int low = 0;
 		int high = anArray.length - 1;
 		while (low <= high) {
@@ -63,10 +63,9 @@ public class TestSearch {
 	 * @param stringLength
 	 * @param hashTable
 	 */
-	public static void fillArray(String[] anArray, String charactersToUse,
+	public static void fill(String[] anArray, String charactersToUse,
 			int stringLength, HashingSearch<String, Integer> hashTable) {
 
-		System.out.println("\nFilling the array and hash table");
 		// Random number to select a random character
 		Random randomNumber = new Random(System.currentTimeMillis());
 		char[] tempString = new char[stringLength];
@@ -84,6 +83,32 @@ public class TestSearch {
 		}
 	}
 
+	/**
+	 * Fills an array only
+	 * 
+	 * @param anArray
+	 * @param charactersToUse
+	 * @param stringLength
+	 */
+	public static void fill(String[] anArray, String charactersToUse,
+			int stringLength) {
+
+		// Random number to select a random character
+		Random randomNumber = new Random(System.currentTimeMillis());
+		char[] tempString = new char[stringLength];
+		// Iterate through the array and fill it
+		for (int i = 0; i < anArray.length; i++) {
+			// Get random characters and fill an array with it up to the
+			// required string length
+			for (int j = 0; j < stringLength; j++) {
+				tempString[j] = charactersToUse.charAt(randomNumber
+						.nextInt(charactersToUse.length()));
+			}
+			// Insert the new string in the array and hash table
+			anArray[i] = new String(tempString);
+		}
+	}
+
 	public static void printArray(String[] anArray) {
 		for (String s : anArray) {
 			System.out.println(s);
@@ -93,7 +118,6 @@ public class TestSearch {
 	// Sorts an array using mergeSort
 	public static <E extends Comparable<? super E>> void mergeSort(E[] array,
 			int first, int last) {
-		System.out.println("\nSorting the array");
 		@SuppressWarnings("unchecked")
 		E[] tempArray = (E[]) new Comparable<?>[array.length];
 		// To save memory pass a temporary array to the recursive merge sort
@@ -175,11 +199,16 @@ public class TestSearch {
 	public static void main(String[] args) {
 
 		// Randomly generated string array and a random string to search
-		int size = 5000000;
+		int size = 3000000;
 		int stringSize = 20;
 		// Only allow these characters
 		String charactersAllowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		String[] searchArray = new String[size];
+		
+		// Sets and array to find random strings that are not in searchArray
+		HashSet<String> stringsIn = new HashSet<String>();
+		HashSet<String> stringsNo = new HashSet<String>();
+		String[] searchArray2 = new String[size];
 
 		// Variables to hold time
 		long startTime = 0;
@@ -189,86 +218,93 @@ public class TestSearch {
 		// Fill the array and the hash table with the allowed characters with
 		// strings of predefined size
 
-		//startTime = System.currentTimeMillis();
-		fillArray(searchArray, charactersAllowed, stringSize, searchTable);
-		//endTime = System.currentTimeMillis();
-		//System.out.println("Filling took: " + (endTime - startTime) / 1000.0f
-				//+ " seconds");
+		// startTime = System.currentTimeMillis();
+		fill(searchArray, charactersAllowed, stringSize, searchTable);
+		// endTime = System.currentTimeMillis();
+		// System.out.println("Filling took: " + (endTime - startTime) / 1000.0f
+		// + " seconds");
+
+		fill(searchArray2, charactersAllowed, stringSize);
+		for (int i = 0; i < size; i++) {
+			stringsIn.add(searchArray[i]);
+			stringsNo.add(searchArray2[i]);
+		}
+
+		// Get only those strings that are no in searchArray
+		for (String inA : stringsIn) {
+			if (stringsNo.contains(inA))
+				stringsNo.remove(inA);
+		}
+
+		String[] notInSearch = new String[stringsNo.size()];
+		int index = 0;
+		for (String notIn : stringsNo) {
+			notInSearch[index++] = notIn;
+		}
 
 		// Prepare a random string from those generated strings in searchArray
 		Random stringNumber = new Random(System.currentTimeMillis());
-		String randomString;
-		if ((stringNumber.nextInt(2) - 1) < 0) {
-			randomString = searchArray[stringNumber.nextInt(size + 1)];
-		} else {
-			randomString = "thesestringisnothere";
-		}
-
-		System.out.println("Size: " + size);
-		// Print the random string
-		System.out
-				.println("Random string to search is: " + randomString + "\n");
-
+		String randomString = "";
 		// To determine whether the item was found.
 		boolean found = false;
 
-		// Reset the timers
-		//startTime = 0;
-		//endTime = 0;
-
-		// Begin the linear search test
-		// Get the start time
-		//startTime = System.currentTimeMillis();
-		// Begin linearSearch
-		//found = linearSearch(searchArray, randomString);
-		// Get the stoppage time
-		//endTime = System.currentTimeMillis();
-		// Output the actual time ran.
-		//System.out.println("\nLinear search looking for: " + randomString
-				//+ " Did we find it? " + found);
-		//System.out.println("That took " + (endTime - startTime) / 1000.0f
-				//+ " seconds");
-
-		// Reset the timers and boolean
-		//startTime = 0;
-		//endTime = 0;
-
-		// We sort the array first so that binarySearch will work
-		//startTime = System.currentTimeMillis();
+		// Sort the array first
 		mergeSort(searchArray, 0, searchArray.length - 1);
-		//endTime = System.currentTimeMillis();
-		//System.out.println("\nSorting took: " + (endTime - startTime) / 1000.0f
-				//+ " seconds");
-		
-		// Reset the timers and boolean
-		//startTime = 0;
-		//endTime = 0;
-		found = false;
 
-		// Begin binarySearch. Get the start and end time
-		startTime = System.currentTimeMillis();
-		found = binarySearch(searchArray, randomString);
-		endTime = System.currentTimeMillis();
-		// Output the actual time ran.
-		System.out.println("\nBinary search looking for: " + randomString
-				+ " Did we find it? " + found);
-		System.out.println("That took " + (endTime - startTime) / 1000.0f
-				+ " seconds");
+		System.out.println("Size of array: " + size);
 
-		// Reset the timers and the boolean
-		//startTime = 0;
-		//endTime = 0;
-		//found = false;
+		for (int i = 0; i < 20; i++) {
+			// Reset the timers and boolean
+			startTime = 0;
+			endTime = 0;
+			found = false;
+			// Get a random string or a string that is not in the array
+			if ((stringNumber.nextInt(2) - 1) < 0) {
+				randomString = searchArray[stringNumber.nextInt(size + 1)];
+			} else {
+				randomString = notInSearch[stringNumber
+						.nextInt(notInSearch.length + 1)];
+			}
 
-		// Begin the hash table search
-		//startTime = System.currentTimeMillis();
-		//found = searchTable.contains(randomString);
-		//endTime = System.currentTimeMillis();
-		//System.out.println("\nHasing search looking for: " + randomString
-				//+ " Did we find it? " + found);
-		//System.out.println("That took " + (endTime - startTime) / 1000.0f
-				//+ " seconds");
+			System.out.println("String to search: " + randomString);
+			// Testing the linear search
+			// Get the start time
+			startTime = System.currentTimeMillis();
+			found = linearSearch(searchArray, randomString);
+			// Get the stoppage time
+			endTime = System.currentTimeMillis();
+			// Output the actual time ran.
+			System.out.println("Linear Search: Found? " + found + " Time: "
+					+ (endTime - startTime) / 1000.0f + " seconds");
 
+			// Testing binary search
+			// Reset the timers and boolean
+			startTime = 0;
+			endTime = 0;
+			found = false;
+			// Get the start time
+			startTime = System.currentTimeMillis();
+			// Search for the item
+			found = binarySearch(searchArray, randomString);
+			// Get the stoppage time
+			endTime = System.currentTimeMillis();
+			// Output the actual time ran.
+			System.out.println("Binary Search: Found? " + found + " Time: "
+					+ (endTime - startTime) / 1000.0f + " seconds");
+
+			// Testing the Hash Search
+			// Reset the timers and the boolean
+			startTime = 0;
+			endTime = 0;
+			found = false;
+			// Begin the hash table search
+			startTime = System.currentTimeMillis();
+			found = searchTable.contains(randomString);
+			endTime = System.currentTimeMillis();
+			System.out.println("Hashing Search: Found? " + found + " Time: "
+					+ (endTime - startTime) / 1000.0f + " seconds");
+			System.out.println();
+
+		}
 	}
-
 }

@@ -121,21 +121,21 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	/**
 	 * Performs an in-order tree traversal
 	 */
-	public void inOrder() {
+	public void printInOrder() {
 		inorderTraverse(root);
 	}
 
 	/**
 	 * Performs a pre-order tree traversal
 	 */
-	public void preOrder() {
+	public void printPreOrder() {
 		preorder(root);
 	}
 
 	/**
 	 * Performs a post-order tree traversal
 	 */
-	public void postOrder() {
+	public void printPostOrder() {
 		postOrder(root);
 	}
 
@@ -539,7 +539,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
 				+ myTree.height() + " the tree is size " + myTree.size());
 		System.out.println("The root is " + myTree.getRoot());
 		System.out.println("Tree contains the following items in order");
-		myTree.inOrder();
+		myTree.printInOrder();
 		myTree.insertRecursive("tomato");
 		myTree.insertRecursive("cucumber");
 		myTree.insertRecursive("zuchini");
@@ -548,15 +548,15 @@ public class BinaryTree<E extends Comparable<? super E>> {
 				+ myTree.height() + " the tree is size is " + myTree.size());
 		System.out.println("The root is " + myTree.getRoot());
 		System.out.println("Tree contains the following items in order");
-		myTree.inOrder();
+		myTree.printInOrder();
 
 		// Testing the inorder, preorder, and postorder functions
 		System.out.println("\nTraverse in in-order");
-		myTree.inOrder();
+		myTree.printInOrder();
 		System.out.println("\nTraverse in pre-order");
-		myTree.preOrder();
+		myTree.printPreOrder();
 		System.out.println("\nTraverse in post-order");
-		myTree.postOrder();
+		myTree.printPostOrder();
 		String search = "peach";
 
 		// Testing the delete function.
@@ -577,11 +577,11 @@ public class BinaryTree<E extends Comparable<? super E>> {
 
 		System.out.println("Tree now contains these items in-order");
 		System.out.println("\nTraverse in in-order");
-		myTree.inOrder();
+		myTree.printInOrder();
 		System.out.println("\nTraverse in pre-order");
-		myTree.preOrder();
+		myTree.printPreOrder();
 		System.out.println("\nTraverse in post-order");
-		myTree.postOrder();
+		myTree.printPostOrder();
 		search = "orange";
 
 		System.out.println("\nSearching the tree for " + search
@@ -595,11 +595,11 @@ public class BinaryTree<E extends Comparable<? super E>> {
 
 		System.out.println("Tree now contains these items in-order");
 		System.out.println("\nTraverse in in-order");
-		myTree.inOrder();
+		myTree.printInOrder();
 		System.out.println("\nTraverse in pre-order");
-		myTree.preOrder();
+		myTree.printPreOrder();
 		System.out.println("\nTraverse in post-order");
-		myTree.postOrder();
+		myTree.printPostOrder();
 
 		search = "banana";
 		System.out.println("\nSearching the tree for " + search
@@ -611,11 +611,11 @@ public class BinaryTree<E extends Comparable<? super E>> {
 				+ myTree.height() + " the tree is size " + myTree.size());
 		System.out.println("Tree now contains these items in-order");
 		System.out.println("\nTraverse in in-order");
-		myTree.inOrder();
+		myTree.printInOrder();
 		System.out.println("\nTraverse in pre-order");
-		myTree.preOrder();
+		myTree.printPreOrder();
 		System.out.println("\nTraverse in post-order");
-		myTree.postOrder();
+		myTree.printPostOrder();
 
 	}
 
