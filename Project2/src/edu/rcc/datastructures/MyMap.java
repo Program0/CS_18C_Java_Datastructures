@@ -208,7 +208,7 @@ public class MyMap<Key extends Comparable<? super Key>, Value extends Comparable
 
 		// Return the value pair of the key.
 		// will return null if not in the hash table.
-		return hashTable[index].getValue(key);
+		return (hashTable[index]!=null?hashTable[index].getValue(key):null);
 	}
 
 	/**
@@ -221,8 +221,10 @@ public class MyMap<Key extends Comparable<? super Key>, Value extends Comparable
 	public boolean contains(Key key) {
 		// Find the index of the new entry
 		int index = hash(key);
-		// Find if it is in the linked list at this index
-		return hashTable[index].contains(key);
+		// If the linked list at this index is not empty.
+		// Find if it is in the linked list at this index.
+		return (hashTable[index] != null ? hashTable[index].contains(key)
+				: false);
 	}
 
 	/**
@@ -252,13 +254,14 @@ public class MyMap<Key extends Comparable<? super Key>, Value extends Comparable
 	public int size() {
 		return keyPairs;
 	}
-	
+
 	/**
 	 * Returns an list of keys associated with a given value
+	 * 
 	 * @param value
 	 * @return MyLinkedList<String>
 	 */
-	public MyLinkedList<Key> keysToList(Value value){
+	public MyLinkedList<Key> keysToList(Value value) {
 		MyLinkedList<Key> elements = new MyLinkedList<Key>();
 		// Index to add elements to elements array
 		int index = 0;
@@ -270,19 +273,21 @@ public class MyMap<Key extends Comparable<? super Key>, Value extends Comparable
 
 				// Iterate through the keys at this bucket
 				for (Key key : hashTable[i]) {
-					if(getValue(key).equals(value))
-					elements.insert(key);;
+					if (getValue(key).equals(value))
+						elements.insert(key);
+					;
 				}
 			}
 		}
 		return elements;
 	}
-	
+
 	/**
 	 * Returns a list of keys in the dictionary
+	 * 
 	 * @return MyLinkedList<Key>
 	 */
-	public MyLinkedList<Key> keysTolist(){
+	public MyLinkedList<Key> keysTolist() {
 		MyLinkedList<Key> elements = new MyLinkedList<Key>();
 		// Index to add elements to elements array
 		int index = 0;
@@ -293,22 +298,23 @@ public class MyMap<Key extends Comparable<? super Key>, Value extends Comparable
 			if (hashTable[i] != null && index < keyPairs) {
 
 				// Iterate through the keys at this bucket
-				for (Key key : hashTable[i]) {					
-					elements.insert(key);;
+				for (Key key : hashTable[i]) {
+					elements.insert(key);
+					;
 				}
 			}
 		}
 		return elements;
 	}
-	
 
 	/**
 	 * Returns a string array of the values in the hash table
+	 * 
 	 * @return
 	 */
-	// Work around until I figure out how to get the values 
+	// Work around until I figure out how to get the values
 	// in an array for generics
-	public String[] valuesToArray(){
+	public String[] valuesToArray() {
 		String[] elements = new String[keyPairs];
 		// Index to add elements to elements array
 		int index = 0;
@@ -317,7 +323,7 @@ public class MyMap<Key extends Comparable<? super Key>, Value extends Comparable
 			// Only look at those buckets that are not empty
 			// Do not exceed the number of key pairs in the hash map
 			if (hashTable[i] != null && index < keyPairs) {
-	
+
 				// Iterate through the keys at this bucket
 				for (Key key : hashTable[i]) {
 					elements[index++] = getValue(key).toString();
@@ -332,8 +338,8 @@ public class MyMap<Key extends Comparable<? super Key>, Value extends Comparable
 	 * 
 	 * @return
 	 */
-	
-	// Work around until I figure out how to get the values 
+
+	// Work around until I figure out how to get the values
 	// in an array for generics
 	public String[] keysToArray() {
 		String[] elements = new String[keyPairs];
@@ -353,12 +359,13 @@ public class MyMap<Key extends Comparable<? super Key>, Value extends Comparable
 		}
 		return elements;
 	}
-	
+
 	/**
 	 * Returns a set of keys in the hash table
+	 * 
 	 * @return
 	 */
-	public MySet<Key> set(){
+	public MySet<Key> set() {
 		MySet<Key> elements = new MySet<Key>();
 		// Index to add elements to elements array
 		int index = 0;

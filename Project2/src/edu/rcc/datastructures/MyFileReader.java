@@ -76,30 +76,29 @@ public class MyFileReader {
 	}
 
 	/**
-	 * Takes a map fills it with words according the passed length of the word with
-	 * isograms from a text file.
+	 * Takes a map fills it with words according the passed length of the word
+	 * with isograms from a text file.
 	 * 
 	 * @param file
 	 * @param map
 	 * @param wordList
 	 * @param wordLength
 	 */
-	public static void fillDictionary(File file, MyMap<String, Integer> map, int wordLength) {
+	public static void fillDictionary(File file, MyTree<String, Integer> map) {
 
 		try {
 			BufferedReader fromFile = new BufferedReader(new FileReader(file));
 
 			String line = null;
-			// Go through each line it the file and process it
+			// Go through each line in the file and process it
 			do {
 				line = fromFile.readLine();
 				// In case the first line is null
 				if (line == null)
 					break;
 				// Fill the word dictionary to be used in the puzzles
-				if (line.length() == wordLength
-						&& line.charAt(wordLength - 2) != '\'' && isogram(line)) {
-					map.insert(line, wordScore(line));					
+				if (line.charAt(line.length() - 2) != '\'' && isogram(line)) {
+					map.insert(line, line.length());
 				}
 
 			} while (line != null);
@@ -112,5 +111,6 @@ public class MyFileReader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-}
+	}// end fillDictionary
+	
+}// End class

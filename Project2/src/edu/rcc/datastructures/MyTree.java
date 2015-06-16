@@ -1,18 +1,25 @@
+/**
+ * @File MyQueue.java
+ * @author Marlo Zeroth
+ * @date June 10, 2015
+ * @course CSC18C DataStructures
+ */
 package edu.rcc.datastructures;
 
-public class BinaryTree<E extends Comparable<? super E>> {
+public class MyTree<E extends Comparable<? super E>, Difficulty> {
 
 	// Default constructor. Creates an empty tree.
-	BinaryTree() {
+	MyTree() {
 		root = null;
 	}
 
 	// Main constructor. Creates a one node tree.
-	BinaryTree(E entry) {
+	MyTree(E entry, Difficulty difficutly) {
 		root.data = entry;
 		root.leftTree = null;
 		root.rightTree = null;
 	}
+
 
 	/**
 	 * Inserts an entry into the tree.
@@ -20,17 +27,17 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	 * @param entry
 	 */
 
-	public void insert(E entry) {
+	public void insert(E entry, Difficulty difficulty) {
 		// Insert an entry into the tree. Iterate through the nodes until a
 		// place is found for the new node. Tree is re-balanced after insertion.
 
 		// If we have an empty tree just add a root
 		if (root == null) {
-			root = new Node<E>(entry);
+			root = new Node<E,Difficulty>(entry, difficulty);
 		} else {
 			// If it is not empty go through the tree to find a place to put the
 			// entry
-			Node<E> node;
+			Node<E,Difficulty> node;
 			node = root;
 			boolean added = false;
 			while (!added) {
@@ -41,7 +48,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
 					// Find if the left node is empty
 					if (node.leftTree == null) {
 						// If it is we found a place to add it in the left tree
-						node.leftTree = new Node<E>(entry);
+						node.leftTree = new Node<E,Difficulty>(entry,difficulty);
 						added = true;
 					} else {
 						// If not go to the next left node
@@ -53,7 +60,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
 				else {
 					if (node.rightTree == null) {
 						// If it is we found a place to add in the right tree
-						node.rightTree = new Node<E>(entry);
+						node.rightTree = new Node<E,Difficulty>(entry,difficulty);
 						added = true;
 					} else {
 						// If not go to the next right node
@@ -61,19 +68,19 @@ public class BinaryTree<E extends Comparable<? super E>> {
 					}
 				}
 			} // end while
-			root = rebalance(root);
+				// root = rebalance(root);
 		} // end else
 	} // end insert
-
+	
 	/**
 	 * Recursively enters an entry into the tree.
-	 * 
+	 * Note this method is significantly slower than the iterative version. 
+	 * Use with caution.
 	 * @param entry
 	 */
-	public void insertRecursive(E entry) {
+	public void insertRecursive(E entry, Difficulty difficulty) {
 		// Insert the new entry
-		root = insert(root, entry);
-		// Re-balance the tree
+		root = insert(root, entry, difficulty);
 		root = rebalance(root);
 	}
 
@@ -88,10 +95,10 @@ public class BinaryTree<E extends Comparable<? super E>> {
 		// Object to return after delete is concludes=d
 		E result = null;
 		// Find the entry and its parent that matches the entry
-		NodePair<E> pair = findNode(entry);
+		NodePair<E, Difficulty> pair = findNode(entry);
 
-		Node<E> currentNode = pair.childNode;
-		Node<E> parentNode = pair.parentNode;
+		Node<E, Difficulty> currentNode = pair.childNode;
+		Node<E, Difficulty> parentNode = pair.parentNode;
 
 		// (currentNode==null?true:false));
 		if (currentNode != null) {
@@ -100,7 +107,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
 			// only one child. We can delete this node
 			if (currentNode.leftTree != null && currentNode.rightTree != null) {
 				pair = predecessor(currentNode);
-				Node<E> nodeToRemove = pair.childNode;
+				Node<E, Difficulty> nodeToRemove = pair.childNode;
 				parentNode = pair.parentNode;
 				currentNode.data = nodeToRemove.data;
 				currentNode = nodeToRemove;
@@ -114,8 +121,33 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	}
 
 	public boolean contains(E entry) {
-		Node<E> node = location(root, entry);
+		Node<E, Difficulty> node = location(root, entry);
 		return (node != null ? true : false);
+	}
+
+	public MyLinkedList<E> getList(Difficulty difficulty) {
+		MyLinkedList<E> list = new MyLinkedList<E>();
+		getList(root, list, difficulty);
+		return list;
+	}
+
+	/**
+	 * Fills a list recursively with items that match the passed parameter difficulty
+	 * @param node The root node of the tree
+	 * @param list The list to fill with items matching difficulty
+	 * @param difficulty
+	 */
+	// Helper function to getList(Difficulty difficulty)
+	private void getList(Node<E, Difficulty> node, MyLinkedList<E> list,
+			Difficulty difficulty) {
+		if (node != null) {
+			// First get the left node
+			getList(node.leftTree, list, difficulty);
+			if (node.difficulty == difficulty)
+				list.insert(node.data);
+			// Get the right node
+			getList(node.rightTree, list, difficulty);
+		}
 	}
 
 	/**
@@ -183,23 +215,14 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	}
 
 	/**
-	 * Returns true if the tree is empty. False otherwise.
-	 * 
-	 * @return
-	 */
-	public boolean isEmpty() {
-		return root == null ? true : false;
-	}
-
-	/**
 	 * Returns a reference to a new root by rotating nodes right
 	 * 
 	 * @param node
 	 * @return
 	 */
-	private Node<E> rotateRight(Node<E> node) {
+	private Node<E, Difficulty> rotateRight(Node<E, Difficulty> node) {
 		// Code based on Carrano's algorithm in book
-		Node<E> newRoot = node.leftTree;
+		Node<E, Difficulty> newRoot = node.leftTree;
 		node.leftTree = newRoot.rightTree;
 		newRoot.rightTree = node;
 		return newRoot;
@@ -211,9 +234,9 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	 * @param node
 	 * @return
 	 */
-	private Node<E> rotateLeft(Node<E> node) {
+	private Node<E, Difficulty> rotateLeft(Node<E, Difficulty> node) {
 		// Code based on Carrano's book algorithm
-		Node<E> newRoot = node.rightTree;
+		Node<E, Difficulty> newRoot = node.rightTree;
 		node.rightTree = newRoot.leftTree;
 		newRoot.leftTree = node;
 		return newRoot;
@@ -225,9 +248,9 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	 * @param node
 	 * @return
 	 */
-	private Node<E> rotateLeftRight(Node<E> node) {
+	private Node<E, Difficulty> rotateLeftRight(Node<E, Difficulty> node) {
 		// Code based on Carrano's algorithm
-		Node<E> newRoot = node.leftTree;
+		Node<E, Difficulty> newRoot = node.leftTree;
 		node.leftTree = rotateLeft(newRoot);
 		return rotateRight(node);
 	}
@@ -238,9 +261,9 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	 * @param node
 	 * @return
 	 */
-	private Node<E> rotateRightLeft(Node<E> node) {
+	private Node<E, Difficulty> rotateRightLeft(Node<E, Difficulty> node) {
 		// Code based on Carrano's algorithm
-		Node<E> newRoot = node.rightTree;
+		Node<E, Difficulty> newRoot = node.rightTree;
 		node.rightTree = rotateRight(newRoot);
 		return rotateLeft(node);
 	}
@@ -251,13 +274,13 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	 * @param node
 	 * @return heightDifference
 	 */
-	private int heightDifference(Node<E> node) {
+	private int heightDifference(Node<E, Difficulty> node) {
 		return (getHeight(node.leftTree) - getHeight(node.rightTree));
 	}
 
 	// Code is an implementation from Carrano's algorithm in data structures
 	// book
-	private Node<E> rebalance(Node<E> node) {
+	private Node<E, Difficulty> rebalance(Node<E, Difficulty> node) {
 
 		if (node != null) {
 			// Get the height difference between left and right subtrees
@@ -283,8 +306,9 @@ public class BinaryTree<E extends Comparable<? super E>> {
 		return node;
 	}
 
-	private void removeNode(Node<E> nodeToRemove, Node<E> parentNode) {
-		Node<E> childNode;
+	private void removeNode(Node<E, Difficulty> nodeToRemove,
+			Node<E, Difficulty> parentNode) {
+		Node<E, Difficulty> childNode;
 		if (nodeToRemove.leftTree != null) {
 			childNode = nodeToRemove.leftTree;
 		} else {
@@ -307,13 +331,13 @@ public class BinaryTree<E extends Comparable<? super E>> {
 
 	}
 
-	private NodePair<E> predecessor(Node<E> node) {
+	private NodePair<E, Difficulty> predecessor(Node<E, Difficulty> node) {
 
 		// First go left
-		Node<E> leftSubTree = node.leftTree;
+		Node<E, Difficulty> leftSubTree = node.leftTree;
 		// Now we need to go as far to the right as possible
-		Node<E> rightChild = leftSubTree;
-		Node<E> parentNode = node;
+		Node<E, Difficulty> rightChild = leftSubTree;
+		Node<E, Difficulty> parentNode = node;
 
 		// Keep going right until we reach null
 		while (rightChild.rightTree != null) {
@@ -321,21 +345,21 @@ public class BinaryTree<E extends Comparable<? super E>> {
 			rightChild = rightChild.rightTree;
 		}
 		// Return the right subtree and its parent node
-		return new NodePair<E>(rightChild, parentNode);
+		return new NodePair<E, Difficulty>(rightChild, parentNode);
 	}
 
-	private NodePair<E> findNode(E entry) {
+	private NodePair<E, Difficulty> findNode(E entry) {
 
 		// Now we need to go as far to the right as possible
-		NodePair<E> result = new NodePair<E>();
-		Node<E> childNode = root;
-		Node<E> parentNode = null;
+		NodePair<E, Difficulty> result = new NodePair<E, Difficulty>();
+		Node<E, Difficulty> childNode = root;
+		Node<E, Difficulty> parentNode = null;
 
 		// Keep going right until we reach null
 		while (childNode != null) {
 
 			if (childNode.data.compareTo(entry) == 0) {
-				result = new NodePair<E>(childNode, parentNode);
+				result = new NodePair<E, Difficulty>(childNode, parentNode);
 				return result;
 			}
 			// Search the left subtree if entry is less than current node data
@@ -361,13 +385,14 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	 * @param entry
 	 * @return
 	 */
-	private Node<E> insert(Node<E> node, E entry) {
+	private Node<E, Difficulty> insert(Node<E, Difficulty> node, E entry,
+			Difficulty difficulty) {
 		// If we reach a leaf or the tree is empty
 		if (node == null) {
 			// System.out.println("creating a new node with " +
 			// entry.toString());
 			// Make a new leaf
-			node = new Node<E>(entry);
+			node = new Node<E, Difficulty>(entry, difficulty);
 		}
 		// If there are subtrees check each node recursively
 		else {
@@ -375,12 +400,14 @@ public class BinaryTree<E extends Comparable<? super E>> {
 				// System.out.println("Adding to the left side. Root is "
 				// +root.data + " tree heigh is " + getHeight(root));
 				// Add it to the left tree
-				node.leftTree = insert(node.leftTree, entry);
+				node.leftTree = insert(node.leftTree, entry, difficulty);
+				node.leftTree = rebalance(node.leftTree);
 			} else {
 				// System.out.println("Adding to the right side. Root is " +
 				// root.data+ " tree heigh is " + getHeight(root));
 				// Add it to the right tree
-				node.rightTree = insert(node.rightTree, entry);
+				node.rightTree = insert(node.rightTree, entry, difficulty);
+				node.rightTree = rebalance(node.rightTree);
 			}
 		}
 		// Return the node
@@ -393,7 +420,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	 * 
 	 * @param node
 	 */
-	private void inorderTraverse(Node<E> node) {
+	private void inorderTraverse(Node<E, Difficulty> node) {
 		// If the node is null it will print the parent node
 		if (node != null) {
 			// First get the left node
@@ -414,7 +441,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	 * @return node A reference to the location of the entry in the tree. It
 	 *         returns null if the entry is not in the tree.
 	 */
-	private Node<E> location(Node<E> node, E entry) {
+	private Node<E, Difficulty> location(Node<E, Difficulty> node, E entry) {
 
 		if (node != null) {
 			// If we find it we exit the recursive call
@@ -440,7 +467,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	 * 
 	 * @param node
 	 */
-	private void preorder(Node<E> node) {
+	private void preorder(Node<E, Difficulty> node) {
 		if (node != null) {
 			System.out.println(node.data);
 			preorder(node.leftTree);
@@ -453,7 +480,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	 * 
 	 * @param node
 	 */
-	private void postOrder(Node<E> node) {
+	private void postOrder(Node<E, Difficulty> node) {
 		if (node != null) {
 			postOrder(node.leftTree);
 			postOrder(node.rightTree);
@@ -467,7 +494,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	 * @param node
 	 * @return totalNodes
 	 */
-	private int totalNodes(Node<E> node) {
+	private int totalNodes(Node<E, Difficulty> node) {
 		if (node == null) {
 			return 0;
 		}
@@ -485,7 +512,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
 	 * @param node
 	 * @return height
 	 */
-	private int getHeight(Node<E> node) {
+	private int getHeight(Node<E, Difficulty> node) {
 		// If the tree is empty return 0
 		if (node == null) {
 			return 0;
@@ -497,16 +524,14 @@ public class BinaryTree<E extends Comparable<? super E>> {
 		return (leftHeight > rightHeight ? (1 + leftHeight) : (1 + rightHeight));
 	}
 
-	// Tree root
-	private Node<E> root;
-
-	// Nested class
-	private static class Node<E> {
+	// Nested class to hold tree nodes
+	private static class Node<E, Difficulty> {
 		// Main constructor
-		Node(E entry) {
+		Node(E entry, Difficulty difficulty) {
 			this.data = entry;
 			leftTree = null;
 			rightTree = null;
+			this.difficulty = difficulty;
 		}
 
 		private boolean isLeaf() {
@@ -515,14 +540,16 @@ public class BinaryTree<E extends Comparable<? super E>> {
 		}
 
 		// Left and right tree reference nodes
-		private Node<E> leftTree;
-		private Node<E> rightTree;
+		private Node<E, Difficulty> leftTree;
+		private Node<E, Difficulty> rightTree;
 		// Node data
 		E data;
+		Difficulty difficulty;
 	}
 
-	private static class NodePair<E> {
-		NodePair(Node<E> childNode, Node<E> parentNode) {
+	// Nested class to help keep tree balanced after deleting a node.
+	private static class NodePair<E, Difficulty> {
+		NodePair(Node<E, Difficulty> childNode, Node<E, Difficulty> parentNode) {
 			this.childNode = childNode;
 			this.parentNode = parentNode;
 		}
@@ -531,129 +558,13 @@ public class BinaryTree<E extends Comparable<? super E>> {
 			this(null, null);
 		}
 
-		private Node<E> childNode;
-		private Node<E> parentNode;
+		private Node<E, Difficulty> childNode;
+		private Node<E, Difficulty> parentNode;
 	}
 
-	public static void main(String[] args) {
-		BinaryTree<String> myTree = new BinaryTree<String>();
-		// Testing insertion and re-balancing
-		System.out.println("Creating an empty tree. Height of tree is "
-				+ myTree.height() + " is tree empty? " + myTree.isEmpty());
-		myTree.insert("canteloupe");
-		System.out.println("Adding 1 entry. Height of tree is "
-				+ myTree.height() + " the tree is size " + myTree.size()
-				+ " is tree empty? " + myTree.isEmpty());
-		System.out.println("The root is " + myTree.getRoot());
-		myTree.insert("orange");
-		myTree.insert("banana");
-		myTree.insert("pear");
-		myTree.insert("apple");
-		System.out.println("After adding 5 entries. Height of tree is "
-				+ myTree.height() + " the tree is size " + myTree.size());
-		System.out.println("The root is " + myTree.getRoot());
-		System.out.println("Tree contains the following items in order");
-		myTree.inOrder();
-		myTree.insertRecursive("tomato");
-		myTree.insertRecursive("cucumber");
-		myTree.insertRecursive("zuchini");
-		myTree.insertRecursive("brocoli");
-		System.out.println("adding 4 more entries. Height of tree is "
-				+ myTree.height() + " the tree is size is " + myTree.size());
-		System.out.println("The root is " + myTree.getRoot());
-		System.out.println("Tree contains the following items in order");
-		myTree.inOrder();
-
-		// Testing the inorder, preorder, and postorder functions
-		System.out.println("\nTraverse in in-order");
-		myTree.inOrder();
-		System.out.println("\nTraverse in pre-order");
-		myTree.preOrder();
-		System.out.println("\nTraverse in post-order");
-		myTree.postOrder();
-		String search = "peach";
-
-		// Testing the delete function.
-		System.out.println("\nSearching the tree for " + search
-				+ ": Is it in the tree? " + myTree.contains(search));
-		System.out.println("Attempting to delete" + search + " Deleted: "
-				+ myTree.delete(search));
-
-		search = "pear";
-		System.out.println("\nSearching the tree for " + search
-				+ ": Is it in the tree? " + myTree.contains(search));
-		System.out.println("Attempting to delete " + search + " Deleted: "
-				+ myTree.delete(search));
-
-		System.out.println("The root is " + myTree.getRoot());
-		System.out.println("After deleting 1 entry. Height of tree is "
-				+ myTree.height() + " the tree is size " + myTree.size());
-
-		System.out.println("Tree now contains these items in-order");
-		System.out.println("\nTraverse in in-order");
-		myTree.inOrder();
-		System.out.println("\nTraverse in pre-order");
-		myTree.preOrder();
-		System.out.println("\nTraverse in post-order");
-		myTree.postOrder();
-		search = "orange";
-
-		System.out.println("\nSearching the tree for " + search
-				+ ": Is it in the tree? " + myTree.contains(search));
-		System.out.println("Attempting to delete " + search + " Deleted: "
-				+ myTree.delete(search));
-
-		System.out.println("The root is " + myTree.getRoot());
-		System.out.println("After deleting 1 entry. Height of tree is "
-				+ myTree.height() + " the tree is size " + myTree.size());
-
-		System.out.println("Tree now contains these items in-order");
-		System.out.println("\nTraverse in in-order");
-		myTree.inOrder();
-		System.out.println("\nTraverse in pre-order");
-		myTree.preOrder();
-		System.out.println("\nTraverse in post-order");
-		myTree.postOrder();
-
-		search = "banana";
-		System.out.println("\nSearching the tree for " + search
-				+ ": Is it in the tree? " + myTree.contains(search));
-		System.out.println("Attempting to delete " + search + " Deleted: "
-				+ myTree.delete(search));
-		System.out.println("The root is " + myTree.getRoot());
-		System.out.println("After deleting 1 entry. Height of tree is "
-				+ myTree.height() + " the tree is size " + myTree.size());
-		System.out.println("Tree now contains these items in-order");
-		System.out.println("\nTraverse in in-order");
-		myTree.inOrder();
-		System.out.println("\nTraverse in pre-order");
-		myTree.preOrder();
-		System.out.println("\nTraverse in post-order");
-		myTree.postOrder();
-
-		search = "brocoli";
-		myTree.delete(search);
-		myTree.delete("tomato");
-		myTree.delete("apple");
-		myTree.delete("cucumber");
-		myTree.delete("canteloupe");
-		System.out.println("Deleting five more entries. Is tree empty? "
-				+ myTree.isEmpty());
-		System.out.println("The root is " + myTree.getRoot());
-		System.out.println("After deleting 1 entry. Height of tree is "
-				+ myTree.height() + " the tree is size " + myTree.size());
-		System.out.println("Tree now contains these items in-order");
-		System.out.println("\nTraverse in in-order");
-		myTree.inOrder();
-		System.out.println("\nTraverse in pre-order");
-		myTree.preOrder();
-		System.out.println("\nTraverse in post-order");
-		myTree.postOrder();
-		System.out.println("Deleting last item: " + myTree.delete("zuchini")
-				+ " tree empty? " + myTree.isEmpty());
-		System.out.println("Attempting to delete when empty: "
-				+ myTree.delete("apple") +" is tree empty? " + myTree.isEmpty());
-
-	}
-
-}
+	/******************************************************************************
+	 ******************************** Member Variables ****************************
+	 ******************************************************************************/
+	// Tree root
+	private Node<E, Difficulty> root;
+}// End MyTree class

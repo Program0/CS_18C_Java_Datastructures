@@ -1,6 +1,5 @@
 package edu.rcc.datastructures;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -64,7 +63,7 @@ public class TestSearch {
 	 * @param hashTable
 	 */
 	public static void fill(String[] anArray, String charactersToUse,
-			int stringLength, HashingSearch<String, Integer> hashTable) {
+			int stringLength, MyHashMap<String, Integer> hashTable) {
 
 		// Random number to select a random character
 		Random randomNumber = new Random(System.currentTimeMillis());
@@ -79,8 +78,9 @@ public class TestSearch {
 			}
 			// Insert the new string in the array and hash table
 			anArray[i] = new String(tempString);
-			hashTable.insert(new String(tempString), i);
+			hashTable.insert(new String(tempString), i);			
 		}
+		tempString = null;
 	}
 
 	/**
@@ -199,22 +199,17 @@ public class TestSearch {
 	public static void main(String[] args) {
 
 		// Randomly generated string array and a random string to search
-		int size = 3000000;
+		int size = 3250000;
 		int stringSize = 20;
 		// Only allow these characters
 		String charactersAllowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		String[] searchArray = new String[size];
-		
-		// Sets and array to find random strings that are not in searchArray
-		HashSet<String> stringsIn = new HashSet<String>();
-		HashSet<String> stringsNo = new HashSet<String>();
-		String[] searchArray2 = new String[size];
 
 		// Variables to hold time
 		long startTime = 0;
 		long endTime = 10;
 
-		HashingSearch<String, Integer> searchTable = new HashingSearch<String, Integer>();
+		MyHashMap<String, Integer> searchTable = new MyHashMap<String, Integer>();
 		// Fill the array and the hash table with the allowed characters with
 		// strings of predefined size
 
@@ -223,24 +218,6 @@ public class TestSearch {
 		// endTime = System.currentTimeMillis();
 		// System.out.println("Filling took: " + (endTime - startTime) / 1000.0f
 		// + " seconds");
-
-		fill(searchArray2, charactersAllowed, stringSize);
-		for (int i = 0; i < size; i++) {
-			stringsIn.add(searchArray[i]);
-			stringsNo.add(searchArray2[i]);
-		}
-
-		// Get only those strings that are no in searchArray
-		for (String inA : stringsIn) {
-			if (stringsNo.contains(inA))
-				stringsNo.remove(inA);
-		}
-
-		String[] notInSearch = new String[stringsNo.size()];
-		int index = 0;
-		for (String notIn : stringsNo) {
-			notInSearch[index++] = notIn;
-		}
 
 		// Prepare a random string from those generated strings in searchArray
 		Random stringNumber = new Random(System.currentTimeMillis());
@@ -262,8 +239,16 @@ public class TestSearch {
 			if ((stringNumber.nextInt(2) - 1) < 0) {
 				randomString = searchArray[stringNumber.nextInt(size + 1)];
 			} else {
-				randomString = notInSearch[stringNumber
-						.nextInt(notInSearch.length + 1)];
+				// Create a randome string
+				char[] tempString = new char[stringSize];
+				// Get random characters and fill an array with it up to the
+				// required string length
+				for (int j = 0; j < stringSize; j++) {
+					tempString[j] = charactersAllowed.charAt(stringNumber
+							.nextInt(charactersAllowed.length()));
+				}
+				// Insert the new string in the array and hash table
+				randomString = new String(tempString);
 			}
 
 			System.out.println("String to search: " + randomString);
@@ -279,8 +264,6 @@ public class TestSearch {
 
 			// Testing binary search
 			// Reset the timers and boolean
-			startTime = 0;
-			endTime = 0;
 			found = false;
 			// Get the start time
 			startTime = System.currentTimeMillis();
@@ -294,8 +277,6 @@ public class TestSearch {
 
 			// Testing the Hash Search
 			// Reset the timers and the boolean
-			startTime = 0;
-			endTime = 0;
 			found = false;
 			// Begin the hash table search
 			startTime = System.currentTimeMillis();

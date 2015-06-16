@@ -257,22 +257,21 @@ public class GamePlay {
 		File file = new File("american-english.txt");
 
 		// Dictionaries with isograms ranging from easy to hard
-		MyMap<String, Integer> easyDictionary = new MyMap<String, Integer>();
-		MyMap<String, Integer> mediumDictionary = new MyMap<String, Integer>();
-		MyMap<String, Integer> hardDictionary = new MyMap<String, Integer>();
-
+		MyTree<String,Integer> mainDictionary = new MyTree<String,Integer>();
 		// Fill the three dictionaries
-		MyFileReader.fillDictionary(file, easyDictionary, 3);
-		MyFileReader.fillDictionary(file, mediumDictionary, 4);
-		MyFileReader.fillDictionary(file, hardDictionary, 6);
-
+		Long startTime = System.currentTimeMillis();
+		MyFileReader.fillDictionary(file, mainDictionary);	
+		Long endTime = System.currentTimeMillis();
+		System.out.println("Filling the dictionary took " + (endTime - startTime) / 1000.0f + " seconds");
+			
 		// Lists of puzzle words ranging from easy to hard
 		// Easy each letter in a word appears only once
-		MyLinkedList<String> easySetting = easyDictionary.keysTolist();
+		MyLinkedList<String> easySetting = mainDictionary.getList(3);
+		
 		// Medium setting: each letter can appear once or twice in the word
-		MyLinkedList<String> mediumSetting = mediumDictionary.keysTolist();
+		MyLinkedList<String> mediumSetting = mainDictionary.getList(4);
 		// This is only for first order isogram (each letter appears only once)
-		MyLinkedList<String> hardSetting = hardDictionary.keysToList(1);
+		MyLinkedList<String> hardSetting = mainDictionary.getList(6);
 
 		// For user option to continue game and get difficulty
 		String option = "";
@@ -311,10 +310,10 @@ public class GamePlay {
 				.println("Letters may show multiple times for medium and hard.");
 
 		System.out.println("Available code words in the dictionaries");
-		System.out.println("Easy Dictionary: " + easyDictionary.size());
+		System.out.println("Easy Dictionary: " + easySetting.size());
 		// gameDictionary.print();
-		System.out.println("Medium Dictionary: " + mediumDictionary.size());
-		System.out.println("Hard Dictionary: " + hardDictionary.size());
+		System.out.println("Medium Dictionary: " + mediumSetting.size());
+		System.out.println("Hard Dictionary: " + hardSetting.size());
 		System.out.println();
 		Random randomNumber = new Random(System.currentTimeMillis());
 
